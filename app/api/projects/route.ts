@@ -1,10 +1,15 @@
-import { NextResponse } from "next/server";
+// app/api/projects/route.ts
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongoose";
-import ProjectContent, { type ProjectContent as ProjectDoc } from "@/models/ProjectContent";
+import ProjectContent, {
+  type ProjectContent as ProjectDoc,
+} from "@/models/ProjectContent";
 import { getSessionUserId } from "@/lib/session";
 import { type FilterQuery } from "mongoose";
 
-export async function GET() {
+export const runtime = "nodejs"; // ensure Node for DB access
+
+export async function GET(_req: NextRequest) {
   const userId = await getSessionUserId();
   await dbConnect();
 
@@ -24,8 +29,7 @@ export async function GET() {
   return NextResponse.json(projects);
 }
 
-// Create a project: current user becomes creator + admin
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const userId = await getSessionUserId();
   await dbConnect();
 
